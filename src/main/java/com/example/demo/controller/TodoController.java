@@ -28,8 +28,16 @@ public class TodoController {
     }
 
     @GetMapping("{id}")
-    Todo findById(@PathVariable Long id) {
-        return todoService.findById(id);
+    TodoResponseDTO findById(@PathVariable Long id) {
+        Todo todo = todoService.findById(id);
+
+        return new TodoResponseDTO(
+                todo.getId(),
+                todo.getName(),
+                todo.getDescription(),
+                todo.isDone(),
+                todo.getPriority()
+        );
     }
 
     @PutMapping("{id}")

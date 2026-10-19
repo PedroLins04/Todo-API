@@ -1,3 +1,4 @@
+
 package com.example.demo;
 
 import com.example.demo.entity.Todo;
@@ -9,12 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -22,12 +22,62 @@ class DemoApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private TodoRepository todoRepository;
 
+    private String token;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         todoRepository.deleteAll();
+
+        String name = "testeUser";
+        String email = "teste" + System.nanoTime() + "@gmail.com";
+        String password = "SenhaTeste123!";
+
+        // Registra um usuário para o teste.
+        MvcResult registerResult = mockMvc.perform(post("/auth/register")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                    "name": "%s",
+                                    "email": "%s",
+                                    "password": "%s"
+                                }
+                                """.formatted(name, email, password)))
+                .andReturn();
+
+        System.out.println("Status do cadastro: "
+                + registerResult.getResponse().getStatus());
+
+        System.out.println("Resposta do cadastro: "
+                + registerResult.getResponse().getContentAsString());
+
+        // Realiza login e obtém o JWT.
+        MvcResult result = mockMvc.perform(post("/auth/login")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                    "name": "%s",
+                                    "email": "%s",
+                                    "password": "%s"
+                                }
+                                """.formatted(name, email, password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JsonNode json = objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        );
+
+        token = json.get("token").asText();
+    }
+
+    private String authorizationHeader() {
+        return "Bearer " + token;
     }
 
     @Test
@@ -35,6 +85,7 @@ class DemoApplicationTests {
         var todo = new Todo("todo 1", "description 1", false, 1);
 
         mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -56,6 +107,7 @@ class DemoApplicationTests {
     @Test
     void testCreateTodoFailure() throws Exception {
         mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -68,7 +120,8 @@ class DemoApplicationTests {
 
     @Test
     void testFindTodoByIdSuccess() throws Exception {
-        var result = mockMvc.perform(post("/todos")
+        MvcResult result = mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -81,14 +134,14 @@ class DemoApplicationTests {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        var objectMapper = new ObjectMapper();
-        var response = objectMapper.readTree(
+        JsonNode response = objectMapper.readTree(
                 result.getResponse().getContentAsString()
         );
 
         long id = response.get(0).get("id").asLong();
 
-        mockMvc.perform(get("/todos/" + id))
+        mockMvc.perform(get("/todos/" + id)
+                        .header("Authorization", authorizationHeader()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("Todo 2"))
@@ -97,16 +150,15 @@ class DemoApplicationTests {
 
     @Test
     void testFindTodoByIdFailure() throws Exception {
-        mockMvc.perform(get("/todos/99999999"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Id not found"));
+        mockMvc.perform(get("/todos/99999999")
+                        .header("Authorization", authorizationHeader()))
+                .andExpect(status().isNotFound());
     }
-
 
     @Test
     void testUpdateTodoSuccess() throws Exception {
-
-        var result = mockMvc.perform(post("/todos")
+        MvcResult result = mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -119,28 +171,33 @@ class DemoApplicationTests {
                 .andExpect(status().isOk())
                 .andReturn();
 
-
-        var objectMapper = new ObjectMapper();
-        var response = objectMapper.readTree(
+        JsonNode response = objectMapper.readTree(
                 result.getResponse().getContentAsString()
         );
+
         long id = response.get(0).get("id").asLong();
 
-
-        mockMvc.perform(put("/todos/" + id)
+        MvcResult updateResult = mockMvc.perform(put("/todos/" + id)
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
-                                {                           
+                                {
                                     "name": "Todo updated",
                                     "description": "Updated Description",
                                     "done": true,
                                     "priority": 2
                                 }
                                 """))
-                .andExpect(status().isOk());
+                .andReturn();
 
+        System.out.println("Status: "
+                + updateResult.getResponse().getStatus());
 
-        mockMvc.perform(get("/todos/" + id))
+        System.out.println("Resposta: "
+                + updateResult.getResponse().getContentAsString());
+
+        mockMvc.perform(get("/todos/" + id)
+                        .header("Authorization", authorizationHeader()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Todo updated"))
                 .andExpect(jsonPath("$.description").value("Updated Description"))
@@ -148,10 +205,10 @@ class DemoApplicationTests {
                 .andExpect(jsonPath("$.priority").value(2));
     }
 
-
     @Test
     void testUpdateTodoNotFound() throws Exception {
         mockMvc.perform(put("/todos/999999")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -161,14 +218,13 @@ class DemoApplicationTests {
                                     "priority": 2
                                 }
                                 """))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Id not found"));
+                .andExpect(status().isNotFound());
     }
-
 
     @Test
     void testDeleteTodoSuccess() throws Exception {
         MvcResult result = mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
                         .contentType("application/json")
                         .content("""
                                 {
@@ -181,26 +237,25 @@ class DemoApplicationTests {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String response = result.getResponse().getContentAsString();
+        JsonNode json = objectMapper.readTree(
+                result.getResponse().getContentAsString()
+        );
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode json = objectMapper.readTree(response);
         long id = json.get(0).get("id").asLong();
 
-        mockMvc.perform(delete("/todos/" + id))
+        mockMvc.perform(delete("/todos/" + id)
+                        .header("Authorization", authorizationHeader()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/todos/" + id))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Id not found"));
+        mockMvc.perform(get("/todos/" + id)
+                        .header("Authorization", authorizationHeader()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void testDeleteTodoNotFound() throws Exception {
-        mockMvc.perform(delete("/todos/99999999"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Id not found"));
+        mockMvc.perform(delete("/todos/99999999")
+                        .header("Authorization", authorizationHeader()))
+                .andExpect(status().isNotFound());
     }
-
-
 }

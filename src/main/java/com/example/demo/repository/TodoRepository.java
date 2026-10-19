@@ -12,5 +12,5 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     Optional<Todo> findByIdAndUser_Email(Long id, String email);
 
-    List<Todo> findAllByUser_EmailOrderByPriorityDescNameAsc(String email);
+    List<Todo> findAllByUser_Email(String email);
 }

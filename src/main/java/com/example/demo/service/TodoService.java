@@ -52,7 +52,7 @@ public class TodoService {
         String email = getAuthenticatedEmail();
 
         return todoRepository
-                .findAllByUser_EmailOrderByPriorityDescNameAsc(email)
+                .findAllByUser_Email(email)
                 .stream()
                 .map(this::responseDTO)
                 .toList();

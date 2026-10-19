@@ -1,11 +1,15 @@
 package com.example.demo.service;
 
+import com.example.demo.DTO.login.LoginRequestDTO;
+import com.example.demo.DTO.login.LoginResponseDTO;
 import com.example.demo.DTO.register.RegisterRequestDTO;
 import com.example.demo.DTO.register.RegisterResponseDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.JwtService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,9 +27,12 @@ public class AuthService implements UserDetailsService {
 
     private PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -58,6 +65,20 @@ public class AuthService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles("USER")
                 .build();
+    }
+
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        User user = userRepository.findByEmail(loginRequestDTO.email())
+                .orElseThrow(() ->
+                        new BadCredentialsException("E-mail inválido"));
+
+        if (!passwordEncoder.matches(loginRequestDTO.password(), user.getPassword())) {
+            throw new BadCredentialsException("Senha inválida");
+        }
+
+        String token = jwtService.generateToken(loginRequestDTO.email());
+
+        return new LoginResponseDTO(token);
     }
 
 }

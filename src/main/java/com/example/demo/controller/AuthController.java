@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.login.LoginRequestDTO;
+import com.example.demo.DTO.login.LoginResponseDTO;
 import com.example.demo.DTO.register.RegisterRequestDTO;
 import com.example.demo.DTO.register.RegisterResponseDTO;
 import com.example.demo.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,5 +24,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
         return authService.register(registerRequestDTO);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+        return ResponseEntity.ok(authService.login(loginRequestDTO));
     }
 }

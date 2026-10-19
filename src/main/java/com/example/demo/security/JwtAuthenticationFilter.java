@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
+        System.out.println("FILTRO JWT EXECUTADO");
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -48,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String email = jwtService.extractUsername(token);
+            System.out.println("EMAIL EXTRAÍDO DO TOKEN: " + email);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -67,6 +69,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
+                System.out.println("USUÁRIO AUTENTICADO: " +
+                        SecurityContextHolder.getContext()
+                                .getAuthentication().getName());
             }
 
         } catch (JwtException | IllegalArgumentException e) {

@@ -21,6 +21,7 @@ public class SecurityConfig {
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        System.out.println("SECURITY CONFIG CARREGADO");
     }
 
     @Bean
@@ -30,7 +31,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
 
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/auth/register", "/auth/login")

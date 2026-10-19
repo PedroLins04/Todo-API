@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleException(BadCredentialsException e) {
+    public ResponseEntity<String> handleException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail or password incorrect.");
     }
 }

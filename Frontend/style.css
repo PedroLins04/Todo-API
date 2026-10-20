@@ -419,6 +419,42 @@ textarea.modal-form {
   cursor: not-allowed;
 }
 
+.area-perfil {
+  position: relative;
+}
+
+.perfil-popup {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  padding: 20px;
+  color: #f1f5f9;
+  background: #111c33;
+  border: 1px solid #293954;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 30%);
+  z-index: 1050;
+  overflow-wrap: anywhere;
+}
+
+.perfil-popup h6 {
+  color: #f1f5f9;
+}
+
+.perfil-popup p {
+  font-size: 0.95rem;
+}
+
+.perfil-popup small {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.perfil-popup.d-none {
+  display: none !important;
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 991.98px) {
   body {

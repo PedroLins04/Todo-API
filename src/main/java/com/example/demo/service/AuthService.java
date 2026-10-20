@@ -4,19 +4,18 @@ import com.example.demo.DTO.login.LoginRequestDTO;
 import com.example.demo.DTO.login.LoginResponseDTO;
 import com.example.demo.DTO.register.RegisterRequestDTO;
 import com.example.demo.DTO.register.RegisterResponseDTO;
+import com.example.demo.DTO.userProfile.UserProfileDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service
@@ -54,7 +53,7 @@ public class AuthService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public UserDetails loadUserByUsername(@NonNull String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Usuário não encontrado")
@@ -79,6 +78,13 @@ public class AuthService implements UserDetailsService {
         String token = jwtService.generateToken(loginRequestDTO.email());
 
         return new LoginResponseDTO(token);
+    }
+
+    public UserProfileDTO findProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+
+        return new UserProfileDTO(user.getName(), user.getEmail());
     }
 
 }

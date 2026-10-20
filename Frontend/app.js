@@ -430,4 +430,37 @@ formExcluir.addEventListener("submit", async (e) => {
   tarefaSelecionada = null;
 });
 
+const btnPerfil = document.getElementById("btnPerfil");
+const perfilPopup = document.getElementById("perfilPopup");
+const fecharPerfil = document.getElementById("fecharPerfil");
+
+const perfilNome = document.getElementById("perfilNome");
+const perfilEmail = document.getElementById("perfilEmail");
+
+btnPerfil.addEventListener("click", async () => {
+  const aberto = perfilPopup.classList.contains("d-none");
+
+  perfilPopup.classList.toggle("d-none");
+  btnPerfil.setAttribute("aria-expanded", String(aberto));
+
+  if (!aberto) return;
+
+  try {
+    const usuario = await requisicaoAPI(`${AUTH_URL}/me`);
+
+    perfilNome.textContent = usuario.name;
+    perfilEmail.textContent = usuario.email;
+  } catch (error) {
+    perfilNome.textContent = "Não foi possível carregar";
+    perfilEmail.textContent = "Tente novamente";
+
+    console.error("Erro ao carregar perfil:", error);
+  }
+});
+
+fecharPerfil.addEventListener("click", () => {
+  perfilPopup.classList.add("d-none");
+  btnPerfil.setAttribute("aria-expanded", "false");
+});
+
 buscarTarefas();

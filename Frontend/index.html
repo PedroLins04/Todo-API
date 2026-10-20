@@ -273,7 +273,7 @@
 
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control modal-form"
                   id="name"
                   maxlength="120"
                   placeholder="Ex.: Implementar autenticação"
@@ -287,7 +287,7 @@
                 </label>
 
                 <textarea
-                  class="form-control"
+                  class="form-control modal-form"
                   id="description"
                   rows="3"
                   placeholder="Descreva a tarefa..."
@@ -298,7 +298,10 @@
                 <label for="priority" class="form-label modalTexts"
                   >Prioridade</label
                 >
-                <select class="form-control form-control-sm" id="priority">
+                <select
+                  class="form-control form-control-sm modal-form"
+                  id="priority"
+                >
                   <option value="" disabled selected>
                     Selecione a prioridade
                   </option>
@@ -308,7 +311,7 @@
                 </select>
               </div>
 
-              <div class="form-check mt-4 ms-1">
+              <div class="form-check mt-4 ms-2">
                 <input class="form-check-input" type="checkbox" id="done" />
 
                 <label class="form-check-label modalTexts" for="done">

@@ -9,9 +9,17 @@ const btnLogin = document.getElementById("btnLogin");
 const togglePassword = document.getElementById("togglePassword");
 
 // Exibir mensagens de erro ou sucesso
-function exibirMensagem(texto, sucesso = false) {
+function exibirMensagemErro(texto, sucesso = false) {
   mensagem.textContent = texto;
   mensagem.classList.add("visible");
+  mensagem.classList.toggle("login-success", sucesso);
+}
+
+function exibirMensagem(texto, sucesso = true) {
+  mensagem.textContent = texto;
+  mensagem.classList.remove("login-message");
+  mensagem.classList.add("visible");
+  mensagem.classList.add("login-message-success");
   mensagem.classList.toggle("login-success", sucesso);
 }
 
@@ -44,7 +52,7 @@ formLogin.addEventListener("submit", async (event) => {
     !campoEmail.value.trim() ||
     !campoSenha.value
   ) {
-    exibirMensagem("Preencha todos os campos.");
+    exibirMensagemErro("Preencha todos os campos.");
     return;
   }
 
@@ -87,12 +95,7 @@ formLogin.addEventListener("submit", async (event) => {
       sessionStorage.setItem("token", dados.token);
     }
 
-    exibirMensagem(
-      `Login realizado com sucesso! Bem-vindo, ${
-        dados.name || campoNome.value.trim()
-      }. Redirecionando para o aplicativo...`,
-      true,
-    );
+    exibirMensagem(`Redirecionando para o aplicativo...`, true);
 
     formLogin.reset();
 
@@ -100,7 +103,7 @@ formLogin.addEventListener("submit", async (event) => {
       window.location.href = "index.html";
     }, 1500);
   } catch (erro) {
-    exibirMensagem(erro.message || "Erro de conexão com o servidor.");
+    exibirMensagemErro(erro.message || "Erro de conexão com o servidor.");
   } finally {
     btnLogin.disabled = false;
     btnLogin.innerHTML = '<span>Entrar</span><i class="bi bi-arrow-right"></i>';

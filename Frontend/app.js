@@ -3,7 +3,7 @@ const AUTH_URL = `${API_URL}/auth`;
 const TODO_URL = `${API_URL}/todos`;
 
 function obterToken() {
-  return localStorage.getItem("token");
+  return sessionStorage.getItem("token");
 }
 
 async function requisicaoAPI(url, options = {}) {
@@ -31,7 +31,16 @@ async function requisicaoAPI(url, options = {}) {
   }
 
   if (!resposta.ok) {
-    throw new Error(`Erro na requisição: ${resposta.status}`);
+    const detalhe = await resposta.text();
+
+    console.error("Resposta do backend:", {
+      status: resposta.status,
+      detalhe,
+    });
+
+    throw new Error(
+      `Erro HTTP ${resposta.status}: ${detalhe || resposta.statusText}`,
+    );
   }
 
   if (resposta.status === 204) {
@@ -51,15 +60,11 @@ document.querySelector("#btnNovaTarefa").addEventListener("click", () => {
 
 async function buscarTarefas() {
   try {
-    const response = await requisicaoAPI(TODO_URL);
+    const tarefas = await requisicaoAPI(TODO_URL);
 
-    if (!response.ok) {
-      throw new Error("Erro ao buscar tarefas");
-    }
-
-    const tarefas = await response.json();
     exibirTarefas(tarefas);
     atualizarContadores(tarefas);
+
     return tarefas;
   } catch (error) {
     console.error("Erro ao buscar tarefas:", error);
@@ -201,23 +206,12 @@ function atualizarContadores(tarefas) {
 
 async function adicionarTarefa(tarefa) {
   try {
-    const response = await requisicaoAPI(TODO_URL, {
+    await requisicaoAPI(TODO_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(tarefa),
     });
 
-    if (!response.ok) {
-      throw new Error("Erro ao adicionar tarefa");
-    }
-
-    const tarefasAtualizadas = await response.json();
-    atualizarContadores(tarefasAtualizadas);
-
-    tarefas = tarefasAtualizadas;
-    exibirTarefas(tarefas);
+    await buscarTarefas();
   } catch (error) {
     console.error("Erro ao adicionar tarefa:", error);
   }
@@ -225,23 +219,12 @@ async function adicionarTarefa(tarefa) {
 
 async function atualizarTarefa(tarefaId, tarefaAtualizada) {
   try {
-    const response = await requisicaoAPI(`${TODO_URL}/${tarefaId}`, {
+    await requisicaoAPI(`${TODO_URL}/${tarefaId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(tarefaAtualizada),
     });
 
-    if (!response.ok) {
-      throw new Error("Erro ao atualizar tarefa");
-    }
-
-    const tarefasAtualizadas = await response.json();
-
-    tarefas = tarefasAtualizadas;
-    exibirTarefas(tarefas);
-    atualizarContadores(tarefas);
+    await buscarTarefas();
   } catch (error) {
     console.error("Erro ao atualizar tarefa:", error);
   }
@@ -319,16 +302,6 @@ async function deletarTarefa(tarefaId) {
     const response = await requisicaoAPI(`${TODO_URL}/${tarefaId}`, {
       method: "DELETE",
     });
-
-    if (!response.ok) {
-      throw new Error("Erro ao deletar tarefa");
-    }
-
-    const tarefasAtualizadas = await response.json();
-
-    tarefas = tarefasAtualizadas;
-    exibirTarefas(tarefas);
-    atualizarContadores(tarefas);
   } catch (error) {
     console.error("Erro ao deletar tarefa:", error);
   }
@@ -403,13 +376,7 @@ listas.forEach((lista) => {
 
 async function BuscarPorTexto(texto) {
   try {
-    const response = await requisicaoAPI(TODO_URL);
-
-    if (!response.ok) {
-      throw new Error("Erro ao buscar tarefas");
-    }
-
-    const tarefas = await response.json();
+    const tarefas = await requisicaoAPI(TODO_URL);
     const termo = texto.trim().toLowerCase();
 
     return tarefas.filter((tarefa) =>

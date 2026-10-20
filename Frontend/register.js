@@ -69,14 +69,14 @@ formRegister.addEventListener("submit", async (event) => {
     }
 
     exibirMensagem(
-      `Conta criada com sucesso! Bem-vindo, ${dados.name || campoNome.value.trim()}. Redirecionando para o app...`,
+      `Conta criada com sucesso! Bem-vindo, ${dados.name || campoNome.value.trim()}. Redirecionando para a página de login...`,
       true,
     );
 
     formRegister.reset();
 
     setTimeout(() => {
-      window.location.href = "index.html";
+      window.location.href = "Login.html";
     }, 1800);
   } catch (erro) {
     exibirMensagem(erro.message || "Erro de conexão com o servidor.");

@@ -97,9 +97,8 @@
   gap: 12px;
   min-height: 49px;
   padding: 0 14px;
-  border: 1px solid #334563;
   border-radius: 10px;
-  background: #0b172c;
+  background: #fffffff1;
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
@@ -111,7 +110,7 @@
 }
 
 .login-input-wrapper > i {
-  color: #8fa5c5;
+  color: #0b172c;
   font-size: 1.05rem;
 }
 
@@ -122,13 +121,13 @@
   padding: 0;
   border: none;
   outline: none;
-  color: #f8fafc;
+  color: #032c55;
   background: transparent;
   font-size: 0.94rem;
 }
 
 .login-input-wrapper input::placeholder {
-  color: #71839f;
+  color: #485874;
 }
 
 .login-input-wrapper input:focus {
@@ -142,13 +141,13 @@
   justify-content: center;
   padding: 5px;
   border: none;
-  color: #8fa5c5;
-  background: transparent;
+  color: #001f4d;
+  background: none;
   cursor: pointer;
 }
 
 .login-toggle-password:hover {
-  color: #ffffff;
+  color: #030303;
 }
 
 .login-message {

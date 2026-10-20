@@ -391,15 +391,24 @@ async function BuscarPorTexto(texto) {
 const formularioPesquisa = document.getElementById("searchTarefa");
 const inputPesquisa = document.getElementById("inputPesquisa");
 
-formularioPesquisa.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
+inputPesquisa.addEventListener("input", async () => {
   const texto = inputPesquisa.value;
+
+  if (!texto.trim()) {
+    const tarefas = await requisicaoAPI(TODO_URL);
+    exibirTarefas(tarefas);
+    atualizarContadores(tarefas);
+    return;
+  }
+
   const tarefas = await BuscarPorTexto(texto);
 
-  limparBarra();
   exibirTarefas(tarefas);
   atualizarContadores(tarefas);
+});
+
+formularioPesquisa.addEventListener("submit", (e) => {
+  e.preventDefault();
 });
 
 function limparBarra() {

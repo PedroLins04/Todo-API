@@ -19,10 +19,14 @@
   overflow: hidden;
 }
 
+.login-container {
+  transform: translateY(-50px);
+}
+
 .login-card {
   width: 100%;
   max-width: 430px;
-  padding: 38px;
+  padding: 15px;
   border: 1px solid #94a3b82e;
   border-radius: 18px;
   background: #0f1b33eb;

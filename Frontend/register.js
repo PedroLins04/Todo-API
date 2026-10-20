@@ -8,10 +8,18 @@ const mensagem = document.getElementById("registerMensagem");
 const btnRegister = document.getElementById("btnRegister");
 const togglePassword = document.getElementById("togglePassword");
 
-function exibirMensagem(texto, sucesso = false) {
+function exibirMensagemErro(texto, sucesso = false) {
   mensagem.textContent = texto;
   mensagem.classList.add("visible");
 
+  mensagem.classList.toggle("register-success", sucesso);
+}
+
+function exibirMensagem(texto, sucesso = true) {
+  mensagem.textContent = texto;
+  mensagem.classList.remove("login-message");
+  mensagem.classList.add("visible");
+  mensagem.classList.add("login-message-success");
   mensagem.classList.toggle("register-success", sucesso);
 }
 
@@ -39,7 +47,7 @@ formRegister.addEventListener("submit", async (event) => {
   mensagem.classList.remove("visible", "register-success");
 
   if (campoSenha.value.length < 4) {
-    exibirMensagem("A senha deve ter pelo menos 4 caracteres.");
+    exibirMensagemErro("A senha deve ter pelo menos 4 caracteres.");
     campoSenha.focus();
     return;
   }
@@ -79,7 +87,7 @@ formRegister.addEventListener("submit", async (event) => {
       window.location.href = "Login.html";
     }, 1800);
   } catch (erro) {
-    exibirMensagem(erro.message || "Erro de conexão com o servidor.");
+    exibirMensagemErro(erro.message || "Erro de conexão com o servidor.");
   } finally {
     btnRegister.disabled = false;
     btnRegister.innerHTML =

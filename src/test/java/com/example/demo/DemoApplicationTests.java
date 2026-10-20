@@ -6,6 +6,7 @@ import com.example.demo.repository.TodoRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -258,4 +259,100 @@ class DemoApplicationTests {
                         .header("Authorization", authorizationHeader()))
                 .andExpect(status().isNotFound());
     }
+
+
+    @Test
+    void testUserCannotAccessAnotherUsersTodo() throws Exception {
+
+        // User A task
+        String todoJson = """
+                {
+                    "name": "Tarefa privada",
+                    "description": "Pertence ao usuário A",
+                    "done": false,
+                    "priority": 2
+                }
+                """;
+
+        MvcResult createResult = mockMvc.perform(post("/todos")
+                        .header("Authorization", authorizationHeader())
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(todoJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JsonNode createdTodo = objectMapper.readTree(
+                createResult.getResponse().getContentAsString()
+        );
+
+        long todoId = createdTodo.get(0).get("id").asLong();
+
+        // User B
+        String emailB = "outro" + System.nanoTime() + "@gmail.com";
+        String passwordB = "SenhaTeste123!";
+
+        String registerJson = """
+                {
+                    "name": "Usuario B",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(emailB, passwordB);
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(registerJson))
+                .andExpect(status().is2xxSuccessful());
+
+        // Login User B
+        String loginJson = """
+                {
+                    "name": "Usuario B",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(emailB, passwordB);
+
+        MvcResult loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String tokenB = objectMapper.readTree(
+                loginResult.getResponse().getContentAsString()
+        ).get("token").asText();
+
+        String authB = "Bearer " + tokenB;
+
+        // User B try to get User A data
+        mockMvc.perform(get("/todos/{id}", todoId)
+                        .header("Authorization", authB))
+                .andExpect(status().isNotFound());
+
+        // User B try to update user A tasks
+        mockMvc.perform(put("/todos/{id}", todoId)
+                        .header("Authorization", authB)
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content("""
+                                {
+                                    "name": "Tentativa de invasão",
+                                    "description": "Alteração indevida",
+                                    "done": true,
+                                    "priority": 4
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+
+        // User B try to delete user A tasks
+        mockMvc.perform(delete("/todos/{id}", todoId)
+                        .header("Authorization", authB))
+                .andExpect(status().isNotFound());
+
+        // user A still can consult his list
+        mockMvc.perform(get("/todos/{id}", todoId)
+                        .header("Authorization", authorizationHeader()))
+                .andExpect(status().isOk());
+    }
+
 }

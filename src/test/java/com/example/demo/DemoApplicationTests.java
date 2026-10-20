@@ -355,4 +355,10 @@ class DemoApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void AccessWithoutToken() throws Exception {
+        mockMvc.perform(get("/todos"))
+                .andExpect(status().isForbidden());
+    }
+
 }

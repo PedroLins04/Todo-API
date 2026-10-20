@@ -361,4 +361,70 @@ class DemoApplicationTests {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void WrongPassword() throws Exception {
+        String email = "outro" + System.nanoTime() + "@gmail.com";
+        String password = "SenhaTeste123!";
+
+        String registerJson = """
+                {
+                    "name": "Usuario",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(email, password);
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(registerJson))
+                .andExpect(status().is2xxSuccessful());
+
+        String loginJson = """
+                {
+                    "name": "Usuario",
+                    "email": "%s",
+                    "password": "wrooong"
+                }
+                """.formatted(email);
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(loginJson))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void SameEmail() throws Exception {
+        String email = "outro" + System.nanoTime() + "@gmail.com";
+        String password = "SenhaTeste123!";
+
+        String registerJson = """
+                {
+                    "name": "Usuario",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(email, password);
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(registerJson))
+                .andExpect(status().is2xxSuccessful());
+
+        //INVALID ACCOUNT
+        String invalidJson = """
+                {
+                    "name": "Usuario2",
+                    "email": "%s",
+                    "password": "123"
+                }
+                """.formatted(email);
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest());
+
+    }
+
 }

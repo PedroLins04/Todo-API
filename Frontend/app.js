@@ -1,4 +1,45 @@
-const API_URL = "http://localhost:8080/todos";
+const API_URL = "http://localhost:8080";
+const AUTH_URL = `${API_URL}/auth`;
+const TODO_URL = `${API_URL}/todos`;
+
+function obterToken() {
+  return localStorage.getItem("token");
+}
+
+async function requisicaoAPI(url, options = {}) {
+  const token = obterToken();
+
+  const headers = {
+    ...options.headers,
+  };
+
+  if (options.body) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const resposta = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (resposta.status === 401 || resposta.status === 403) {
+    throw new Error("Sessão inválida ou sem permissão.");
+  }
+
+  if (!resposta.ok) {
+    throw new Error(`Erro na requisição: ${resposta.status}`);
+  }
+
+  if (resposta.status === 204) {
+    return null;
+  }
+
+  return resposta.json();
+}
 
 const listaPendentes = document.getElementById("listaPendentes");
 const listaConcluidas = document.getElementById("listaConcluidas");
@@ -10,7 +51,7 @@ document.querySelector("#btnNovaTarefa").addEventListener("click", () => {
 
 async function buscarTarefas() {
   try {
-    const response = await fetch(API_URL);
+    const response = await requisicaoAPI(TODO_URL);
 
     if (!response.ok) {
       throw new Error("Erro ao buscar tarefas");
@@ -160,7 +201,7 @@ function atualizarContadores(tarefas) {
 
 async function adicionarTarefa(tarefa) {
   try {
-    const response = await fetch(API_URL, {
+    const response = await requisicaoAPI(TODO_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +225,7 @@ async function adicionarTarefa(tarefa) {
 
 async function atualizarTarefa(tarefaId, tarefaAtualizada) {
   try {
-    const response = await fetch(`${API_URL}/${tarefaId}`, {
+    const response = await requisicaoAPI(`${TODO_URL}/${tarefaId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -275,7 +316,7 @@ async function deletarTarefa(tarefaId) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/${tarefaId}`, {
+    const response = await requisicaoAPI(`${TODO_URL}/${tarefaId}`, {
       method: "DELETE",
     });
 
@@ -362,7 +403,7 @@ listas.forEach((lista) => {
 
 async function BuscarPorTexto(texto) {
   try {
-    const response = await fetch(API_URL);
+    const response = await requisicaoAPI(TODO_URL);
 
     if (!response.ok) {
       throw new Error("Erro ao buscar tarefas");

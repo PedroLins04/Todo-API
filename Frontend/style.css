@@ -335,11 +335,11 @@ footer {
 }
 
 .modal-header {
-  border: 2px dashed #334563;
+  border-bottom: 2px dashed #94a3b860;
 }
 
 .modal-footer {
-  border: 2px dashed #334563;
+  border-top: 2px dashed #94a3b860;
 }
 
 .modal-form {

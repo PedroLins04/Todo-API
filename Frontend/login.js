@@ -1,4 +1,5 @@
-const AUTH_URL = "http://localhost:8080/auth";
+//const AUTH_URL = "http://localhost:8080/auth";
+const AUTH_URL = "https://keeptheflow-api.onrender.com/auth";
 
 const formLogin = document.getElementById("formLogin");
 const campoNome = document.getElementById("name");

@@ -100,7 +100,7 @@ formLogin.addEventListener("submit", async (event) => {
     formLogin.reset();
 
     setTimeout(() => {
-      window.location.href = "index.html";
+      window.location.href = "Tarefas.html";
     }, 1500);
   } catch (erro) {
     exibirMensagemErro(erro.message || "Erro de conexão com o servidor.");

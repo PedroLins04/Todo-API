@@ -463,4 +463,19 @@ fecharPerfil.addEventListener("click", () => {
   btnPerfil.setAttribute("aria-expanded", "false");
 });
 
+const formSair = document.getElementById("formSair");
+const modalSairElement = document.getElementById("modalSair");
+
+const modalSair = bootstrap.Modal.getOrCreateInstance(modalSairElement);
+
+formSair.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  sessionStorage.removeItem("token");
+
+  modalSair.hide();
+
+  window.location.href = "Login.html";
+});
+
 buscarTarefas();

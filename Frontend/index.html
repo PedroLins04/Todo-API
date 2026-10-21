@@ -136,6 +136,8 @@
                     type="button"
                     class="btn btn-danger rounded-pill w-100"
                     id="btn-exit"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalSair"
                   >
                     <i class="bi bi-box-arrow-right me-2"></i>
                     Sair da conta
@@ -147,6 +149,51 @@
         </div>
       </nav>
     </header>
+
+    <!-- MODAL DE SAIR DA CONTA -->
+    <div
+      class="modal fade"
+      id="modalSair"
+      tabindex="-1"
+      aria-labelledby="modalSairLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <form id="formSair">
+            <div class="modal-header">
+              <h2 class="modal-title fs-5 fw-bold" id="modalSairLabel">
+                Sair da conta
+              </h2>
+            </div>
+
+            <div class="modal-body">
+              <p class="modalTexts">
+                Tem certeza que deseja sair da sua conta?
+              </p>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-danger fw-bolder"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                class="btn btn-outline-info fw-bolder"
+                id="btnModalSair"
+              >
+                Sair da conta
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="container py-4" id="quadro">

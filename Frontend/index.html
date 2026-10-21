@@ -120,13 +120,28 @@
                 </div>
 
                 <div class="mb-3">
-                  <small class="text-secondary">Nome</small>
+                  <small class="text-secondary" id="namePlace">Nome</small>
                   <p class="mb-0" id="perfilNome">Carregando...</p>
                 </div>
 
                 <div>
                   <small class="text-secondary">E-mail</small>
                   <p class="mb-0" id="perfilEmail">Carregando...</p>
+                </div>
+
+                <hr class="my-3" />
+
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-outline-info rounded-pill w-100"
+                    id="btn-edit"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEdit"
+                  >
+                    <i class="bi bi-gear me-2"></i>
+                    Editar nome
+                  </button>
                 </div>
 
                 <hr class="my-3" />
@@ -149,6 +164,67 @@
         </div>
       </nav>
     </header>
+
+    <!-- MODAL DE EDITAR NOME -->
+    <div
+      class="modal fade"
+      id="modalEdit"
+      tabindex="-1"
+      aria-labelledby="modalEditLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <form id="formEdit">
+            <div class="modal-header">
+              <h2 class="modal-title fs-5 fw-bold" id="modalEditLabel">
+                Editar nome
+              </h2>
+            </div>
+
+            <div class="modal-body">
+              <label for="novoNome" class="modalTexts mb-3 ms-1">
+                Seu nome será atualizado no seu perfil.
+              </label>
+              <input
+                type="text"
+                class="form-control rounded-3"
+                id="novoNome"
+                name="name"
+                placeholder="Digite seu novo nome"
+                minlength="2"
+                maxlength="100"
+                required
+              />
+
+              <div class="invalid-feedback">
+                Informe um nome entre 2 e 100 caracteres.
+              </div>
+
+              <div id="editNomeMensagem" class="mt-2" role="alert"></div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-danger fw-bolder"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                class="btn btn-outline-info fw-bolder"
+                id="btnSalvarNome"
+              >
+                Salvar alterações
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <!-- MODAL DE SAIR DA CONTA -->
     <div

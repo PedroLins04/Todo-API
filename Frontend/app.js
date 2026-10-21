@@ -478,4 +478,51 @@ formSair.addEventListener("submit", (event) => {
   window.location.href = "Login.html";
 });
 
+const formEdit = document.getElementById("formEdit");
+const modalEditElement = document.getElementById("modalEdit");
+const modalEdit = bootstrap.Modal.getOrCreateInstance(modalEditElement);
+
+const campoNovoNome = document.getElementById("novoNome");
+const mensagemEditNome = document.getElementById("editNomeMensagem");
+const btnSalvarNome = document.getElementById("btnSalvarNome");
+
+formEdit.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  console.log("1. Formulário enviado");
+
+  const novoNome = campoNovoNome.value.trim();
+  console.log("2. Novo nome:", novoNome);
+
+  try {
+    console.log("3. Enviando requisição para:", `${AUTH_URL}/me`);
+
+    const dados = await requisicaoAPI(`${AUTH_URL}/me`, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: novoNome,
+      }),
+    });
+
+    console.log("4. Resposta da API:", dados);
+
+    // Atualiza o nome na interface
+    const elementoNome = document.getElementById("nomeUsuario");
+
+    if (elementoNome) {
+      elementoNome.textContent = dados.name;
+    }
+
+    formEdit.reset();
+    modalEdit.hide();
+  } catch (error) {
+    console.error("Erro na atualização:", error);
+
+    mensagemEditNome.textContent = "Erro ao atualizar o nome.";
+    mensagemEditNome.className = "text-danger mt-2";
+  } finally {
+    btnSalvarNome.disabled = false;
+  }
+});
+
 buscarTarefas();

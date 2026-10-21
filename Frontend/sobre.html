@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sobre | KeepTheFlow</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="sobre.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg fixed-top navbar-custom">
+        <div class="container justify-content-between flex-wrap flex-lg-nowrap">
+          <div class="navbar-left d-flex align-items-center gap-2">
+            <a
+              class="navbar-brand p-2 me-0 d-flex align-items-center"
+              href="Tarefas.html"
+            >
+              <i
+                class="bi bi-clipboard-data-fill fs-2 me-2"
+                style="color: #8ed5ff"
+              ></i>
+              <span class="logo text-white fw-bold fs-4"
+                >KeepThe<span style="color: #8ed5ff; font-size: larger"
+                  >Flow</span
+                ></span
+              >
+            </a>
+
+            <button
+              class="navbar-toggler ms-2"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navegacao"
+              aria-controls="navegacao"
+              aria-expanded="false"
+              aria-label="Abrir menu"
+            >
+              <i class="bi bi-list text-white fs-2"></i>
+            </button>
+          </div>
+
+          <div
+            class="collapse navbar-collapse justify-content-end"
+            id="navegacao"
+          >
+            <ul class="navbar-nav align-items-lg-center gap-lg-1">
+              <li class="nav-item">
+                <a href="Tarefas.html" class="nav-link">
+                  <i class="bi bi-kanban me-1"></i>
+                  Minhas tarefas
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="about-page">
+      <div class="container">
+        <section class="about-hero">
+          <div class="about-hero-copy">
+            <span class="about-eyebrow">
+              <span class="about-eyebrow-dot"></span>
+              CONHEÇA O KEEP THE FLOW
+            </span>
+
+            <h1>Organize suas tarefas.<br /><span>Mantenha o fluxo.</span></h1>
+
+            <p class="about-lead">
+              O KeepTheFlow é uma aplicação de produtividade criada para
+              simplificar a organização das tarefas, ajudar você a definir
+              prioridades e acompanhar seu progresso em um só lugar.
+            </p>
+
+            <div class="about-actions">
+              <a href="Tarefas.html" class="btn about-btn-primary">
+                <i class="bi bi-kanban me-2"></i>
+                Explorar minhas tarefas
+              </a>
+              <a
+                href="https://github.com/PedroLins04/Todo-API"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn about-btn-secondary"
+              >
+                <i class="bi bi-github me-2"></i>
+                Ver código-fonte
+              </a>
+            </div>
+          </div>
+
+          <div class="about-visual" aria-label="Ilustração de um quadro Kanban">
+            <div class="about-visual-glow"></div>
+            <div class="about-mini-window">
+              <div class="about-window-top">
+                <div class="about-window-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <span>Meu fluxo de trabalho</span>
+                <i class="bi bi-three-dots"></i>
+              </div>
+
+              <div class="about-mini-board">
+                <div class="about-mini-column">
+                  <div class="about-mini-column-title">
+                    <span class="about-status-dot is-pending"></span>
+                    A fazer <span class="about-mini-count">2</span>
+                  </div>
+
+                  <article class="about-task-card">
+                    <span class="about-task-label label-high"
+                      >Alta prioridade</span
+                    >
+                    <strong>Finalizar projeto</strong>
+                    <span class="about-task-line"></span>
+                    <span class="about-task-line line-short"></span>
+                    <div class="about-task-meta">
+                      <i class="bi bi-circle"></i> Em andamento
+                    </div>
+                  </article>
+
+                  <article class="about-task-card about-task-muted">
+                    <span class="about-task-label label-medium"
+                      >Média prioridade</span
+                    >
+                    <strong>Revisar tarefas</strong>
+                    <span class="about-task-line line-short"></span>
+                  </article>
+                </div>
+
+                <div class="about-mini-column">
+                  <div class="about-mini-column-title">
+                    <span class="about-status-dot is-done"></span>
+                    Concluídas <span class="about-mini-count">1</span>
+                  </div>
+
+                  <article class="about-task-card about-task-completed">
+                    <span class="about-task-label label-done">Concluída</span>
+                    <strong
+                      ><i class="bi bi-check-circle-fill"></i> Organizar a
+                      semana</strong
+                    >
+                    <span class="about-task-line"></span>
+                    <div class="about-task-meta">
+                      <i class="bi bi-check2-circle"></i> Finalizada
+                    </div>
+                  </article>
+
+                  <div class="about-mini-note">
+                    <i class="bi bi-stars"></i> Um passo de cada vez.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="about-floating-chip">
+              <i class="bi bi-check2"></i>
+              Progresso em foco
+            </div>
+          </div>
+        </section>
+
+        <section class="about-intro about-section">
+          <div>
+            <span class="about-eyebrow">A PROPOSTA</span>
+            <h2>Menos complicação.<br /><span>Mais organização.</span></h2>
+          </div>
+          <p>
+            A proposta do KeepTheFlow é reunir o gerenciamento de tarefas em uma
+            interface visual e objetiva. Organize o que precisa ser feito,
+            acompanhe o que está pendente e veja o que já foi concluído — sem
+            perder de vista suas prioridades.
+          </p>
+        </section>
+
+        <section class="about-features about-section">
+          <div class="about-section-heading">
+            <span class="about-eyebrow">FUNCIONALIDADES</span>
+            <h2>Feito para acompanhar <span>seu ritmo.</span></h2>
+            <p>Recursos para deixar seu fluxo de trabalho mais claro.</p>
+          </div>
+
+          <div class="about-feature-grid">
+            <article class="about-feature-card">
+              <div class="about-feature-icon"><i class="bi bi-kanban"></i></div>
+              <h3>Quadro Kanban</h3>
+              <p>
+                Visualize tarefas pendentes e concluídas e mova cartões para
+                atualizar o progresso.
+              </p>
+            </article>
+
+            <article class="about-feature-card">
+              <div class="about-feature-icon icon-purple">
+                <i class="bi bi-flag"></i>
+              </div>
+              <h3>Prioridades</h3>
+              <p>
+                Classifique tarefas por prioridade e identifique o que merece
+                atenção primeiro.
+              </p>
+            </article>
+
+            <article class="about-feature-card">
+              <div class="about-feature-icon icon-cyan">
+                <i class="bi bi-search"></i>
+              </div>
+              <h3>Busca e acompanhamento</h3>
+              <p>
+                Encontre tarefas com facilidade e acompanhe os totais de
+                pendências e conclusões.
+              </p>
+            </article>
+
+            <article class="about-feature-card">
+              <div class="about-feature-icon icon-green">
+                <i class="bi bi-shield-lock"></i>
+              </div>
+              <h3>Conta individual</h3>
+              <p>
+                A autenticação protege o acesso e mantém as tarefas vinculadas à
+                conta correspondente.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="about-tech about-section">
+          <div class="about-tech-copy">
+            <span class="about-eyebrow">POR TRÁS DA APLICAÇÃO</span>
+            <h2>
+              Uma experiência simples,<br /><span
+                >construída com tecnologia.</span
+              >
+            </h2>
+            <p>
+              O projeto combina uma interface web com uma API REST responsável
+              pelas regras de negócio, autenticação e persistência dos dados.
+            </p>
+          </div>
+
+          <div class="about-tech-panel">
+            <div class="about-tech-row">
+              <div class="about-tech-icon tech-java">
+                <i class="bi bi-cup-hot"></i>
+              </div>
+              <div>
+                <strong>Backend</strong
+                ><span>Java · Spring Boot · Spring Security · JWT</span>
+              </div>
+            </div>
+            <div class="about-tech-row">
+              <div class="about-tech-icon tech-database">
+                <i class="bi bi-database"></i>
+              </div>
+              <div>
+                <strong>Dados</strong
+                ><span>PostgreSQL · Spring Data JPA · Flyway</span>
+              </div>
+            </div>
+            <div class="about-tech-row">
+              <div class="about-tech-icon tech-web">
+                <i class="bi bi-window"></i>
+              </div>
+              <div>
+                <strong>Frontend</strong
+                ><span>HTML · CSS · JavaScript · Bootstrap</span>
+              </div>
+            </div>
+            <div class="about-tech-row">
+              <div class="about-tech-icon tech-test">
+                <i class="bi bi-check2-square"></i>
+              </div>
+              <div>
+                <strong>Testes e execução</strong
+                ><span>JUnit · Mockito · MockMvc · Docker</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-closing">
+          <div class="about-closing-icon">
+            <i class="bi bi-clipboard-data-fill"></i>
+          </div>
+          <div class="about-closing-copy">
+            <span class="about-eyebrow">KEEP THE FLOW</span>
+            <h2>Continue no seu ritmo.</h2>
+            <p>
+              Organize o próximo passo e mantenha suas tarefas em movimento.
+            </p>
+          </div>
+          <a href="Tarefas.html" class="btn about-btn-primary">
+            Ir para minhas tarefas <i class="bi bi-arrow-up-right ms-2"></i>
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="about-footer text-center py-3">
+      <p class="small mb-0">
+        KeepTheFlow &copy; 2026 — Organize suas ideias, mantenha o fluxo.
+        <a
+          href="https://github.com/PedroLins04/Todo-API"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="bi bi-github ms-2"></i> GitHub
+        </a>
+      </p>
+    </footer>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

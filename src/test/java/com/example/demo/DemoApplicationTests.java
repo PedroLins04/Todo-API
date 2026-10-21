@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -425,6 +426,69 @@ class DemoApplicationTests {
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
 
+    }
+
+    @Test
+    void UpdateName() throws Exception {
+        String email = "outro" + System.nanoTime() + "@gmail.com";
+        String password = "senha1234";
+
+        String registerJson = """
+                {
+                    "name": "Usuario",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(email, password);
+
+        // Register
+        mockMvc.perform(post("/auth/register")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(registerJson))
+                .andExpect(status().isCreated());
+
+        // Login
+        String loginJson = """
+                {
+                    "name": "Usuario",
+                    "email": "%s",
+                    "password": "%s"
+                }
+                """.formatted(email, password);
+
+        String responseLogin = mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String token = objectMapper.readTree(responseLogin)
+                .get("token")
+                .asText();
+
+        // Update name
+        String updateJson = """
+                {
+                    "name": "Novo Nome"
+                }
+                """;
+
+        mockMvc.perform(put("/auth/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(updateJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Novo Nome"))
+                .andExpect(jsonPath("$.email").value(email));
+
+        // Confirms
+        mockMvc.perform(get("/auth/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Novo Nome"))
+                .andExpect(jsonPath("$.email").value(email));
     }
 
 }

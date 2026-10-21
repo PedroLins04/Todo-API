@@ -4,6 +4,7 @@ import com.example.demo.DTO.login.LoginRequestDTO;
 import com.example.demo.DTO.login.LoginResponseDTO;
 import com.example.demo.DTO.register.RegisterRequestDTO;
 import com.example.demo.DTO.register.RegisterResponseDTO;
+import com.example.demo.DTO.userProfile.UpdateProfileRequestDTO;
 import com.example.demo.DTO.userProfile.UserProfileDTO;
 import com.example.demo.service.AuthService;
 import jakarta.validation.Valid;
@@ -37,5 +38,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserProfileDTO> getCurrentUser(Authentication authentication) {
         return ResponseEntity.ok(authService.findProfile(authentication.getName()));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserProfileDTO> updateCurrentUser(@Valid @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO,
+                                                            Authentication authentication) {
+        UserProfileDTO updatedUser = authService.updateProfile(authentication.getName(), updateProfileRequestDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 }

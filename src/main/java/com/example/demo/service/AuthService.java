@@ -4,6 +4,7 @@ import com.example.demo.DTO.login.LoginRequestDTO;
 import com.example.demo.DTO.login.LoginResponseDTO;
 import com.example.demo.DTO.register.RegisterRequestDTO;
 import com.example.demo.DTO.register.RegisterResponseDTO;
+import com.example.demo.DTO.userProfile.UpdateProfileRequestDTO;
 import com.example.demo.DTO.userProfile.UserProfileDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
@@ -85,6 +86,18 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         return new UserProfileDTO(user.getName(), user.getEmail());
+    }
+
+    public UserProfileDTO updateProfile(String email, UpdateProfileRequestDTO updateProfileRequestDTO) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("Usuário não encontrado")
+                );
+        user.setName(updateProfileRequestDTO.name());
+
+        User savedUser = userRepository.save(user);
+
+        return new UserProfileDTO(savedUser.getName(), savedUser.getEmail());
     }
 
 }

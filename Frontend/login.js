@@ -2,7 +2,6 @@
 const AUTH_URL = "https://keeptheflow-api.onrender.com/auth";
 
 const formLogin = document.getElementById("formLogin");
-const campoNome = document.getElementById("name");
 const campoEmail = document.getElementById("email");
 const campoSenha = document.getElementById("password");
 const mensagem = document.getElementById("loginMensagem");
@@ -48,11 +47,7 @@ formLogin.addEventListener("submit", async (event) => {
   mensagem.classList.remove("visible", "login-success");
 
   // Validar campos obrigatórios
-  if (
-    !campoNome.value.trim() ||
-    !campoEmail.value.trim() ||
-    !campoSenha.value
-  ) {
+  if (!campoEmail.value.trim() || !campoSenha.value) {
     exibirMensagemErro("Preencha todos os campos.");
     return;
   }
@@ -67,7 +62,6 @@ formLogin.addEventListener("submit", async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: campoNome.value.trim(),
         email: campoEmail.value.trim(),
         password: campoSenha.value,
       }),

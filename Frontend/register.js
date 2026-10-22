@@ -85,7 +85,7 @@ formRegister.addEventListener("submit", async (event) => {
     formRegister.reset();
 
     setTimeout(() => {
-      window.location.href = "Login.html";
+      window.location.href = "/login";
     }, 1800);
   } catch (erro) {
     exibirMensagemErro(erro.message || "Erro de conexão com o servidor.");

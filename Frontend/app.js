@@ -507,7 +507,7 @@ formSair.addEventListener("submit", (event) => {
 
   modalSair.hide();
 
-  window.location.href = "Login.html";
+  window.location.href = "/login";
 });
 
 const formEdit = document.getElementById("formEdit");

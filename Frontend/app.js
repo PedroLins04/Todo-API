@@ -236,17 +236,37 @@ async function atualizarTarefa(tarefaId, tarefaAtualizada) {
 }
 
 const formTarefa = document.querySelector("#formTarefa");
+const campoPrioridade = document.querySelector("#priority");
+
 formTarefa.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (!campoPrioridade.value || campoPrioridade.value === "default") {
+    campoPrioridade.classList.add("is-invalid");
+
+    let mensagem =
+      campoPrioridade.parentElement.querySelector(".invalid-feedback");
+
+    if (!mensagem) {
+      mensagem = document.createElement("div");
+      mensagem.classList.add("invalid-feedback");
+      campoPrioridade.insertAdjacentElement("afterend", mensagem);
+    }
+
+    mensagem.textContent = "Selecione uma prioridade.";
+
+    campoPrioridade.focus();
+    return;
+  }
+
+  campoPrioridade.classList.remove("is-invalid");
 
   const tarefa = {
     name: document.querySelector("#name").value.trim(),
     description: document.querySelector("#description").value.trim(),
-    priority: Number(document.querySelector("#priority").value),
+    priority: Number(campoPrioridade.value),
     done: document.querySelector("#done").checked,
   };
-
-  console.log("Tarefa enviada:", tarefa);
 
   if (document.querySelector("#tarefaId").value) {
     const tarefaId = document.querySelector("#tarefaId").value;
@@ -254,7 +274,14 @@ formTarefa.addEventListener("submit", async (event) => {
   } else {
     await adicionarTarefa(tarefa);
   }
+
   fecharModal();
+});
+
+campoPrioridade.addEventListener("change", () => {
+  if (campoPrioridade.value && campoPrioridade.value !== "default") {
+    campoPrioridade.classList.remove("is-invalid");
+  }
 });
 
 // Function for clear the form

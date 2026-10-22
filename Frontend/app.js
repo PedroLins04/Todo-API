@@ -76,6 +76,10 @@ async function buscarTarefas() {
 }
 
 function exibirTarefas(tarefas) {
+  tarefas = [...tarefas].sort((a, b) => {
+    return b.priority - a.priority || a.name.localeCompare(b.name, "pt-BR");
+  });
+
   listaPendentes.replaceChildren();
   listaConcluidas.replaceChildren();
 
@@ -258,7 +262,7 @@ function limparFormulario() {
   document.querySelector("#tarefaId").value = "";
   document.querySelector("#name").value = "";
   document.querySelector("#description").value = "";
-  document.querySelector("#priority").value = "1";
+  document.querySelector("#priority").value = "default";
   document.querySelector("#done").checked = false;
 }
 
@@ -513,6 +517,8 @@ formEdit.addEventListener("submit", async (event) => {
     if (elementoNome) {
       elementoNome.textContent = dados.name;
     }
+
+    perfilNome.textContent = dados.name;
 
     formEdit.reset();
     modalEdit.hide();

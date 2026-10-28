@@ -293,6 +293,11 @@ footer {
   overflow-wrap: anywhere;
 }
 
+.task-card.is-loading {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
 .task-actions {
   display: flex;
   justify-content: flex-end;

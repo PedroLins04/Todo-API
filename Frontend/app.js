@@ -7,6 +7,25 @@ function obterToken() {
   return sessionStorage.getItem("token");
 }
 
+function controlarLoading(botao, carregando, textoLoading) {
+  if (carregando) {
+    botao.dataset.textoOriginal = botao.innerHTML;
+    botao.disabled = true;
+
+    botao.innerHTML = `
+      <span
+        class="spinner-border spinner-border-sm me-2"
+        aria-hidden="true">
+      </span>
+      ${textoLoading}
+    `;
+  } else {
+    botao.disabled = false;
+    botao.innerHTML = botao.dataset.textoOriginal;
+    delete botao.dataset.textoOriginal;
+  }
+}
+
 async function requisicaoAPI(url, options = {}) {
   const token = obterToken();
 
@@ -219,6 +238,7 @@ async function adicionarTarefa(tarefa) {
     await buscarTarefas();
   } catch (error) {
     console.error("Erro ao adicionar tarefa:", error);
+    throw error;
   }
 }
 
@@ -232,6 +252,7 @@ async function atualizarTarefa(tarefaId, tarefaAtualizada) {
     await buscarTarefas();
   } catch (error) {
     console.error("Erro ao atualizar tarefa:", error);
+    throw error;
   }
 }
 
@@ -268,14 +289,25 @@ formTarefa.addEventListener("submit", async (event) => {
     done: document.querySelector("#done").checked,
   };
 
-  if (document.querySelector("#tarefaId").value) {
-    const tarefaId = document.querySelector("#tarefaId").value;
-    await atualizarTarefa(tarefaId, tarefa);
-  } else {
-    await adicionarTarefa(tarefa);
-  }
+  const botao = document.querySelector("#btnModalTarefa");
+  const tarefaId = document.querySelector("#tarefaId").value;
 
-  fecharModal();
+  controlarLoading(botao, true, tarefaId ? "Atualizando..." : "Criando...");
+
+  try {
+    if (tarefaId) {
+      await atualizarTarefa(tarefaId, tarefa);
+    } else {
+      await adicionarTarefa(tarefa);
+    }
+
+    fecharModal();
+  } catch (error) {
+    console.error("Erro ao salvar tarefa:", error);
+    alert("Não foi possível salvar a tarefa. Tente novamente.");
+  } finally {
+    controlarLoading(botao, false);
+  }
 });
 
 campoPrioridade.addEventListener("change", () => {
@@ -348,13 +380,15 @@ document.addEventListener("dragstart", (e) => {
 
   if (!card || !e.dataTransfer) return;
 
-  e.target.classList.add("dragging");
+  card.classList.add("dragging");
 
-  e.dataTransfer.setData("text/plain", e.target.dataset.id);
+  e.dataTransfer.setData("text/plain", card.dataset.id);
 });
 
 document.addEventListener("dragend", (e) => {
-  e.target.classList.remove("dragging");
+  const card = e.target.closest("[data-id]");
+
+  card.classList.remove("dragging");
 });
 
 const listas = [listaPendentes, listaConcluidas];
@@ -401,8 +435,43 @@ listas.forEach((lista) => {
       done: concluida,
     };
 
-    await atualizarTarefa(tarefaId, tarefaAtualizada);
-    await buscarTarefas();
+    const card = document.querySelector(`.task-card[data-id="${tarefaId}"]`);
+
+    if (!card) return;
+
+    card.classList.add("is-loading");
+    card.draggable = false;
+
+    const status = card.querySelector("small");
+
+    card.classList.add("is-loading");
+    card.draggable = false;
+
+    let textoOriginal;
+
+    if (status) {
+      textoOriginal = status.textContent;
+      status.innerHTML = `
+      <span class="spinner-border spinner-border-sm me-1"
+            aria-hidden="true"></span>
+      Atualizando...
+  `;
+    }
+
+    try {
+      await atualizarTarefa(tarefaId, tarefaAtualizada);
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+      alert("Não foi possível atualizar a tarefa.");
+    } finally {
+      if (card.isConnected) {
+        card.classList.remove("is-loading");
+        card.draggable = true;
+      }
+      if (status) {
+        status.innerHTML = textoOriginal;
+      }
+    }
   });
 });
 
@@ -454,11 +523,24 @@ formExcluir.addEventListener("submit", async (e) => {
 
   if (tarefaSelecionada === null) return;
 
-  await deletarTarefa(tarefaSelecionada);
+  const botao = formExcluir.querySelector('button[type= "Submit"]');
+  controlarLoading(botao, true, "Excluindo...");
 
-  const modalExcluir = document.getElementById("modalExcluir");
-  const modal = bootstrap.Modal.getInstance(modalExcluir);
-  modal.hide();
+  try {
+    await deletarTarefa(tarefaSelecionada);
+
+    const modalExcluir = document.getElementById("modalExcluir");
+    const modal = bootstrap.Modal.getInstance(modalExcluir);
+    modal?.hide();
+
+    tarefaSelecionada = null;
+  } catch (eror) {
+    console.log("Não foi possível excluir a tarefa: ", error);
+    alert("Não foi possível excluir a tarefa, tente novamente");
+  } finally {
+    controlarLoading(botao, false);
+  }
+
   tarefaSelecionada = null;
 });
 
